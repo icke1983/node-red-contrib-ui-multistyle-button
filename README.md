@@ -17,7 +17,7 @@ Search for ui-multistyle-button in the searchbar and find node-red-contrib-ui-mu
 
 Run command on Node-RED installation directory.
 
-    npm install \@icke1983/node-red-contrib-ui-multistyle-button
+    npm install @icke1983/node-red-contrib-ui-multistyle-button
 
 ## Usage
 
