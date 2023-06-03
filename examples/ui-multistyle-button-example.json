@@ -1,0 +1,443 @@
+[
+    {
+        "id": "3522c590f2426d4d",
+        "type": "debug",
+        "z": "0c324056da69b609",
+        "name": "debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 550,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "0574fb83ee9fccf7",
+        "type": "inject",
+        "z": "0c324056da69b609",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "topic",
+        "payload": "off",
+        "payloadType": "str",
+        "x": 90,
+        "y": 200,
+        "wires": [
+            [
+                "2f3a1ffb0c7c7b7c"
+            ]
+        ]
+    },
+    {
+        "id": "3081c257eacf4e87",
+        "type": "inject",
+        "z": "0c324056da69b609",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "topic",
+        "payload": "on",
+        "payloadType": "str",
+        "x": 90,
+        "y": 160,
+        "wires": [
+            [
+                "2f3a1ffb0c7c7b7c"
+            ]
+        ]
+    },
+    {
+        "id": "3d2f841b788f5f27",
+        "type": "inject",
+        "z": "0c324056da69b609",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "topic",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 100,
+        "y": 40,
+        "wires": [
+            [
+                "739ed5ec07b968e4"
+            ]
+        ]
+    },
+    {
+        "id": "9dba846c4db4d949",
+        "type": "inject",
+        "z": "0c324056da69b609",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "topic",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 100,
+        "y": 80,
+        "wires": [
+            [
+                "739ed5ec07b968e4"
+            ]
+        ]
+    },
+    {
+        "id": "739ed5ec07b968e4",
+        "type": "ui_multistyle-button",
+        "z": "0c324056da69b609",
+        "group": "64704468.613964",
+        "width": "4",
+        "height": "1",
+        "options": [
+            {
+                "valueType": "str",
+                "value": "default",
+                "icon": "fa-clock-o fa-2x",
+                "iconColor": "",
+                "textColor": "",
+                "bgColor": "",
+                "iconShadow": false,
+                "textShadow": true
+            },
+            {
+                "valueType": "bool",
+                "value": "true",
+                "icon": "fa-envelope-open-o fa-2x",
+                "iconColor": "#00FF00",
+                "textColor": "#00FF00",
+                "bgColor": "blue",
+                "iconShadow": true,
+                "textShadow": false
+            },
+            {
+                "valueType": "bool",
+                "value": "false",
+                "icon": "fa-envelope-open fa-2x",
+                "iconColor": "red",
+                "textColor": "red",
+                "bgColor": "blue",
+                "iconShadow": false,
+                "textShadow": false
+            }
+        ],
+        "name": "true false",
+        "order": 7,
+        "label": "Button1",
+        "payload": "payload",
+        "payloadType": "msg",
+        "sendValue": "toggle true false",
+        "sendValueType": "str",
+        "sendValueTo": "payload",
+        "sendValueToType": "msg",
+        "topic": "topic",
+        "topicType": "msg",
+        "class": "",
+        "x": 360,
+        "y": 60,
+        "wires": [
+            [
+                "3522c590f2426d4d"
+            ]
+        ]
+    },
+    {
+        "id": "43aa9e7597ae138a",
+        "type": "inject",
+        "z": "0c324056da69b609",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "topic",
+        "payload": "OFF",
+        "payloadType": "str",
+        "x": 100,
+        "y": 300,
+        "wires": [
+            [
+                "2f3a1ffb0c7c7b7c"
+            ]
+        ]
+    },
+    {
+        "id": "b2dcb12d9d75087f",
+        "type": "inject",
+        "z": "0c324056da69b609",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "topic",
+        "payload": "ON",
+        "payloadType": "str",
+        "x": 100,
+        "y": 260,
+        "wires": [
+            [
+                "2f3a1ffb0c7c7b7c"
+            ]
+        ]
+    },
+    {
+        "id": "3c0c66ad64e24173",
+        "type": "inject",
+        "z": "0c324056da69b609",
+        "name": "payload.power 3",
+        "props": [
+            {
+                "p": "payload.power",
+                "v": "3",
+                "vt": "num"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "num",
+        "x": 120,
+        "y": 380,
+        "wires": [
+            [
+                "f02e1fd2aa4ebe7a"
+            ]
+        ]
+    },
+    {
+        "id": "3c1dc5c266fc36bd",
+        "type": "inject",
+        "z": "0c324056da69b609",
+        "name": "payload.power \"3\"",
+        "props": [
+            {
+                "p": "payload.power",
+                "v": "3",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "str",
+        "x": 130,
+        "y": 420,
+        "wires": [
+            [
+                "f02e1fd2aa4ebe7a"
+            ]
+        ]
+    },
+    {
+        "id": "2f3a1ffb0c7c7b7c",
+        "type": "ui_multistyle-button",
+        "z": "0c324056da69b609",
+        "group": "64704468.613964",
+        "width": "4",
+        "height": "1",
+        "options": [
+            {
+                "valueType": "str",
+                "value": "default",
+                "icon": "fa-clock-o fa-2x",
+                "iconColor": "",
+                "textColor": "",
+                "bgColor": "",
+                "iconShadow": false,
+                "textShadow": true
+            },
+            {
+                "valueType": "str",
+                "value": "on",
+                "icon": "fa-check-circle fa-2x",
+                "iconColor": "#00FF00",
+                "textColor": "#00FF00",
+                "bgColor": "blue",
+                "iconShadow": true,
+                "textShadow": false
+            },
+            {
+                "valueType": "num",
+                "value": "OFF",
+                "icon": "fa-check-circle-o fa-2x",
+                "iconColor": "red",
+                "textColor": "red",
+                "bgColor": "blue",
+                "iconShadow": false,
+                "textShadow": false
+            }
+        ],
+        "name": "on off",
+        "order": 7,
+        "label": "Button2",
+        "payload": "payload",
+        "payloadType": "msg",
+        "sendValue": "toggle on off",
+        "sendValueType": "str",
+        "sendValueTo": "payload",
+        "sendValueToType": "msg",
+        "topic": "topic",
+        "topicType": "msg",
+        "class": "",
+        "x": 350,
+        "y": 220,
+        "wires": [
+            [
+                "3522c590f2426d4d"
+            ]
+        ]
+    },
+    {
+        "id": "f02e1fd2aa4ebe7a",
+        "type": "ui_multistyle-button",
+        "z": "0c324056da69b609",
+        "group": "64704468.613964",
+        "width": "4",
+        "height": "1",
+        "options": [
+            {
+                "valueType": "str",
+                "value": "default",
+                "icon": "fa-clock-o fa-2x",
+                "iconColor": "",
+                "textColor": "",
+                "bgColor": "",
+                "iconShadow": false,
+                "textShadow": true
+            },
+            {
+                "valueType": "str",
+                "value": "3",
+                "icon": "fa-list fa-2x",
+                "iconColor": "#00FF00",
+                "textColor": "#00FF00",
+                "bgColor": "blue",
+                "iconShadow": true,
+                "textShadow": false
+            },
+            {
+                "valueType": "num",
+                "value": "3",
+                "icon": "fa-list-ol fa-2x",
+                "iconColor": "red",
+                "textColor": "red",
+                "bgColor": "blue",
+                "iconShadow": false,
+                "textShadow": false
+            }
+        ],
+        "name": "str num",
+        "order": 7,
+        "label": "{{msg.topic}}",
+        "payload": "payload.power",
+        "payloadType": "msg",
+        "sendValue": "payload",
+        "sendValueType": "msg",
+        "sendValueTo": "payload",
+        "sendValueToType": "msg",
+        "topic": "topic",
+        "topicType": "msg",
+        "class": "",
+        "x": 340,
+        "y": 400,
+        "wires": [
+            [
+                "3522c590f2426d4d"
+            ]
+        ]
+    },
+    {
+        "id": "64704468.613964",
+        "type": "ui_group",
+        "name": "Default Group",
+        "tab": "ef22f042.de6a1",
+        "order": 1,
+        "disp": true,
+        "width": "9"
+    },
+    {
+        "id": "ef22f042.de6a1",
+        "type": "ui_tab",
+        "name": "Home Tab",
+        "icon": "dashboard"
+    }
+]

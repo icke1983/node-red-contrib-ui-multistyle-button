@@ -13,12 +13,12 @@ module.exports = function(RED) {
         try {
             if (config.options.length > 0) {
                 config.options.forEach( function(item) {
-                    if (item.value == value) {
+                    if (item.value.toLowerCase() == value.toString().toLowerCase() && item.valueType.substring(0,3) == (typeof value).substring(0, 3)) {
                         let fIconColor = item.iconColor;
                         let fTextColor = item.textColor;
                         let fBgColor = item.bgColor;
-                        let fIconShadow = "";
-                        let fTextShadow = "";
+                        let fIconShadow = "unset";
+                        let fTextShadow = "unset";
                         if (fIconColor == "") { fIconColor = "var(--nr-dashboard-widgetTextColor)"; }
                         if (fTextColor == "") { fTextColor = "var(--nr-dashboard-widgetTextColor)"; }
                         if (fBgColor == "") { fBgColor = "var(--nr-dashboard-widgetColor)"; }
@@ -74,7 +74,7 @@ module.exports = function(RED) {
         /**/
         var icons = "";
         //let defaultStyle = findStyle("default", config);
-        let defaultStyle = findStyle(node.defaultStyleValue, config);
+        let defaultStyle = findStyle("default", config);
         icons += String.raw`<ui-icon icon="{{msg.style.icon || '${defaultStyle.icon}'}}" style="color: {{msg.style.iconColor || '${defaultStyle.iconColor}'}}; text-shadow: {{msg.style.iconShadow || '${defaultStyle.iconShadow}'}};"></ui-icon>`;
         HTML += String.raw`<md-button class="md-raised" ng-click="buttonClicked($event)" id="btn_${id}" style="background-color:{{msg.style.bgColor || '${defaultStyle.bgColor}'}};">`;
         HTML += icons;
@@ -110,16 +110,15 @@ module.exports = function(RED) {
                 }
 
                 //set Style
-
-                let style = findStyle(RED.util.getMessageProperty(msg, config.payload), config);
+                let payload = RED.util.getMessageProperty(msg, config.payload);
+                                
+                let style = findStyle(payload, config);
                 if(style != undefined) {
                     node.style = style;
                 }
                 if (node.style != undefined) {
-                    node.defaultStyleValue = RED.util.getMessageProperty(msg, config.payload);
                     msg.style = node.style;
                 }
-            
                 
             });
 
@@ -154,16 +153,24 @@ module.exports = function(RED) {
                     let pl;
                     if (config.sendValueType == "str") {
                         if (config.sendValue == "toggle on off") {
-                            if (node.newMsg_payload == "on") {
-                                pl = "off"
+                            if (node.newMsg_payload == "ON") {
+                                pl = "OFF";
+                            } else if (node.newMsg_payload == "On") {
+                                pl = "Off";
+                            } else if (node.newMsg_payload == "on") {
+                                pl = "off";
+                            } else if (node.newMsg_payload == "OFF") {
+                                pl = "ON";
+                            } else if (node.newMsg_payload == "Off") {
+                                pl = "On";
                             } else {
-                                pl = "on"
+                                pl = "on";
                             }
                         } else if (config.sendValue == "toggle true false") {
-                            if (node.newMsg_Payload == true) {
-                                pl.payload = false
+                            if (node.newMsg_payload == true) {
+                                pl = false;
                             } else {
-                                pl.payload = true
+                                pl = true;
                             }
                         } else {
                             pl = config.sendValue;    
@@ -173,7 +180,7 @@ module.exports = function(RED) {
                     } else if (config.sendValueType == "bool") {
                         pl = Boolean(config.sendValue);
                     } else if (config.sendValueType == "msg") {
-                        pl = node.newMsg_payload ;
+                        pl = node.newMsg_payload;
                     }
                     delete msg[config.sendValueTo.split(".")[0]];
                     RED.util.setMessageProperty(msg, config.sendValueTo, pl, true);
