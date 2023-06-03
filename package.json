@@ -1,0 +1,30 @@
+{
+    "name": "@icke1983/node-red-contrib-ui-multistyle-button",
+    "version": "1.0.0",
+    "description": "Node-RED UI widget button that can be styled by input",
+    "author": "Jens Rothe",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://icke1983/node-red-contrib-ui-multistyle-button.git"
+    },
+    "node-red": {
+        "nodes": {
+            "multistyle button": "ui_multistylebutton.js"
+        }
+    },
+    "keywords": [
+        "ui",
+        "button",
+        "state",
+        "toggle",
+        "selection",
+        "nodered",
+        "node",
+        "red",
+        "node-red",
+        "style",
+        "icon",
+        "color"
+    ]
+}

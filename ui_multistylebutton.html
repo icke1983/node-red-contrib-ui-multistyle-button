@@ -1,0 +1,283 @@
+<script type="text/red-x" data-template-name="ui_multistyle-button">
+    <div class="form-row" id="template-row-group">
+        <label for="node-input-group"><i class="fa fa-table"></i> Group</label>
+        <input type="text" id="node-input-group" style="width: calc(100% - 112px);">
+    </div>
+    <div class="form-row" id="template-row-size">
+        <label><i class="fa fa-object-group"></i> Size</label>
+        <input type="hidden" id="node-input-width">
+        <input type="hidden" id="node-input-height">
+        <button class="editor-button" id="node-input-size"></button>
+        <input type="text" style="max-width:1px; padding:0px; margin-left :10px; margin-right :10px; border-left: none; border-top: none; border_bottom: none; border-radius:0px;" disabled>
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" style="width: calc(100% - 295px)";>
+    </div>
+    <div class="form-row">
+        
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-i-cursor"></i> Label</label>
+        <input type="text" id="node-input-label" style="width: calc(100% - 112px);">
+    </div>
+    <hr>
+    <div class="form-row">
+        <label for="node-input-payload" style="width:170px">check Values <i class="fa fa-arrow-down"></i> from <i class="fa fa-envelope-o"></i></label>
+        <input type="text" id="node-input-payload" style="width: calc(100% - 182px);">
+        <input type="hidden" id="node-input-payloadType">
+    </div>
+    <div class="form-row">       
+        <ol id="node-input-options-container"></ol>
+    </div>
+    <hr>
+    <div class="form-row">
+        <label style="width:auto" for="node-input-payload"><i class="fa fa-envelope-o"></i>on click:</label>
+    </div>
+    <div class="form-row">
+        <label for="node-input-topic" style="padding-left: 25px; margin-right: -25px">send Value</label>
+        <input type="text" id="node-input-sendValue" style="width: calc(60% - 112px);">
+        <input type="hidden" id="node-input-sendValueType">
+        <label for="node-input-sendValueTo" style="padding-left: 25px; margin-right: -25px; width: 50px">to</label>
+        <input type="text" id="node-input-sendValueTo" style="width: calc(40% - 58px);">
+        <input type="hidden" id="node-input-sendValueToType">
+        <span style="display: block; padding-left: 106px; color: gray; font-size: x-small;">for toggeling intputValue&#058; &#8222;toggle on off&#8221; &#0124 &#8222;toggle true false&#8221;</span>
+    </div>
+    <div class="form-row">
+        <label for="node-input-topic" style="padding-left: 25px; margin-right: -25px">msg.topic</label>
+        <input type="text" id="node-input-topic" style="width: calc(100% - 112px);">
+        <input type="hidden" id="node-input-topicType">
+    </div>
+    <hr>
+    <div class="form-row">
+        <label for="node-input-class"><i class="fa fa-code"></i> Class</label>
+        <input type="text" id="node-input-class" style="width: calc(100% - 112px);">
+    </div>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('ui_multistyle-button',{
+        category: 'dashboard',
+        color: 'rgb( 63, 173, 181)',
+        defaults: {
+            group: { type: 'ui_group', required: true },
+            width: {
+                value: 0,
+                validate: function (v) {
+                    var valid = true
+                    var width = v || 0;
+                    var currentGroup = $('#node-input-group').val() || this.group;
+                    var groupNode = RED.nodes.node(currentGroup);
+                    valid = !groupNode || +width <= +groupNode.width;
+                    $("#node-input-size").toggleClass("input-error", !valid);
+                    return valid;
+                }
+            },
+            height: { value: 0 },
+            options: {
+                value: [],
+                validate: function (values) {
+                    if(values === undefined){return false;}
+                    for(var i in values) {
+                        if(values[i].value === undefined || values[i].value == ""){return false;}
+                        if(values[i].icon === undefined){return false;}
+                        if(values[i].iconColor === undefined){return false;}
+                        if(values[i].bgColor === undefined){return false;}
+                    }
+                    return true;
+                }
+            },
+            name: { value:""},
+            order: { value: 0 },
+            label: { value: ""},
+            payload: { value: "payload", required: true, validate: RED.validators.typedInput("payloadType")},
+            payloadType: { value: "msg"},
+            sendValue: { value: "on", required: true, validate: RED.validators.typedInput("sendValueType")},
+            sendValueType: { value: "str"},
+            sendValueTo: { value: "payload", required: true, validate: RED.validators.typedInput("sendValueToType")},
+            sendValueToType: { value: "msg"},
+            topic: { value: "topic", required: false, validate: RED.validators.typedInput("topicType")},
+            topicType: { value: "msg"},
+            class: { value: ""}
+            
+            
+        },
+        inputs:1,
+        outputs:1,
+        paletteLabel:"multistyle button",
+        icon: "icon.png",
+        label: function() {
+            return this.name||"MS-Button";
+        },
+        
+        oneditprepare: function () {
+            var dialog = $("#dialog-form").css('min-width', '840px');
+            //Validate and add an item
+            function validate() {
+                var self = this
+                this.options = [];
+                var optionsList = $("#node-input-options-container").editableList('items');
+                
+                optionsList.each(function (i) {
+                    var option = $(this);
+                    var curr = {};
+                    curr["valueType"] =  option.find(".node-input-option-valueType").val();
+                    curr["value"] = option.find(".node-input-option-value").val();
+                    curr["icon"] = option.find(".node-input-option-icon").val();
+                    curr["iconColor"] = option.find(".node-input-option-iconColor").val();
+                    curr["textColor"] = option.find(".node-input-option-textColor").val();
+                    curr["bgColor"] = option.find(".node-input-option-bgColor").val();
+                    curr["iconShadow"] = option.find(".node-input-option-iconShadow").is(":checked"); 
+                    curr["textShadow"] = option.find(".node-input-option-textShadow").is(":checked");
+                    self.options.push(curr);
+                });
+            }
+            $("#node-input-size").elementSizer({
+                width: "#node-input-width",
+                height: "#node-input-height",
+                group: "#node-input-group"
+            });
+
+            $("#node-input-payload").typedInput({ 
+                default: 'msg', 
+                typeField: $("#node-input-payloadType"),
+                types: ['msg'] 
+            });
+
+            $("#node-input-sendValue").typedInput({ 
+                default: 'str', 
+                typeField: $("#node-input-sendValueType"),
+                types: ['msg', 'str', 'num', 'bool'] 
+            });
+
+            $("#node-input-sendValueTo").typedInput({ 
+                default: 'str', 
+                typeField: $("#node-input-sendValueToType"),
+                types: ['msg'] 
+            });
+
+            $("#node-input-topic").typedInput({ 
+                default: 'msg', 
+                typeField: $("#node-input-topicType"),
+                types: ['str', 'msg'] 
+            });
+
+            var optionsList = $("#node-input-options-container").css('min-height', '200px').editableList({
+                header: $("<div>").css('padding-left', '32px').append($.parseHTML(
+                    "<div style='width: 200px; margin-left: 5px; margin-right: 5px; display: inline-grid'><b>Value</b></div>" +
+                    "<div style='width: 200px; margin-left: 5px; margin-right: 5px; display: inline-grid'><b>Icon</b></div>" +
+                    "<div style='width: 100px; margin-left: 5px; margin-right: 5px; display: inline-grid'><b>Icon Color</b></div>" +
+                    "<div style='width: 100px; margin-left: 5px; margin-right: 5px; display: inline-grid'><b>Text Color</b></div>" +
+                    "<div style='margin-left: 5px; margin-right: 5px; display: inline-grid'><b>Background Color</b></div>")),
+
+                addItem: function (container, i, option) {
+                    
+
+                    var row = $('<div/>',{class: "container-row"} ).appendTo(container);
+                    
+                    var valueTypeField =$('<input/>', { class: "node-input-option-valueType", type: "hidden", id: "node-input-option-valueType" }).appendTo(row);
+                    valueTypeField.val(option.valueType);
+
+                    var valueField = $('<input/>', { class: "node-input-option-value", type: "text" }).css({ "width": "200px", "margin-left": "5px", "margin-right": "5px" }).appendTo(row);
+                    valueField.typedInput({ default: 'str', typeField: valueTypeField, types: ['str', 'num', 'bool'] });
+                    valueField.typedInput("type", option.valueType || "str");
+                    valueField.typedInput("value", option.value || "option_" + i);
+                    valueField.val(option.value);
+                    /*
+                    valueField.on('change', function (type, value) {
+                        validate();
+                    });*/
+                    /*valueField.typedInput({ types: ['str', 'num', 'bool'] });
+                    valueField.typedInput("type", option.valueType || "str");
+                    valueField.typedInput("value", option.value || "option_" + i);
+                    valueField.on('change', function (type, value) {
+                        validate();
+                    });*/
+            
+                    var iconField = $('<input/>', { class: "node-input-option-icon", type: "text" }).css({ "width": "200px", "margin-left": "5px", "margin-right": "5px" }).appendTo(row);
+                    iconField.val(option.icon || "" );
+
+                    var iconColorField = $('<input/>', { class: "node-input-option-iconColor", type: "text" }).css({ "width": "100px", "margin-left": "5px", "margin-right": "5px" }).appendTo(row);
+                    iconColorField.val(option.iconColor || "");
+
+                    var textColorField = $('<input/>', { class: "node-input-option-textColor", type: "text" }).css({ "width": "100px", "margin-left": "5px", "margin-right": "5px" }).appendTo(row);
+                    textColorField.val(option.textColor || "");
+
+                    var bgColorField = $('<input/>', { class: "node-input-option-bgColor", type: "text" }).css({ "width": "100px", "margin-left": "5px", "margin-right": "5px" }).appendTo(row);
+                    bgColorField.val(option.bgColor || "");
+                    validate();
+                    var line2 = $('<div/>').css({"padding": "6px"}).appendTo(row);
+                    // Line 2, Column 1
+                    var iconShadowField = $('<input/>',{class:"node-input-option-iconShadow",type:"checkbox"}).css({"margin-left": "20px", "margin-right": "5px", "vertical-align": "top", "width": "auto"}).appendTo(line2);
+                    var iconShadowLabelField = $('<label/>',{for: iconShadowField }).css({"margin-left": "0px", "vertical-align": "top"}).text("Icon Shadow").appendTo(line2);
+                    iconShadowField.prop('checked', option.iconShadow);
+                    validate();
+                    var textShadowField = $('<input/>',{class:"node-input-option-textShadow",type:"checkbox"}).css({"margin-left": "20px", "margin-right": "5px", "vertical-align": "top", "width": "auto"}).appendTo(line2);
+                    var textShadowLabelField = $('<label/>',{for: textShadowField }).css({"margin-left": "0px", "vertical-align": "top"}).text("Text Shadow").appendTo(line2);
+                    textShadowField.prop('checked', option.textShadow);
+                    validate();
+
+
+                },
+                removeItem: function (data) {
+                    validate()
+                },
+                removable: true,
+                sortable: true,
+
+            });
+
+            //Add existing options
+            if (this.options) {
+                this.options.forEach(function (option, index) {
+                    optionsList.editableList('addItem', { valueType: option.valueType, value: option.value, icon: option.icon, iconColor: option.iconColor, textColor: option.textColor, bgColor: option.bgColor, iconShadow: option.iconShadow, textShadow: option.textShadow });
+                });
+            }
+        },
+        oneditsave: function () {
+            var self = this;
+            self.options = [];
+            var optionsList = $("#node-input-options-container").editableList('items');
+            optionsList.each(function (i) {
+                var option = $(this);
+                var curr = {};
+                curr["valueType"] = option.find(".node-input-option-valueType").val();
+                curr["value"] = option.find(".node-input-option-value").val();
+                curr["icon"] = option.find(".node-input-option-icon").val();
+                curr["iconColor"] = option.find(".node-input-option-iconColor").val();
+                curr["textColor"] = option.find(".node-input-option-textColor").val();
+                curr["bgColor"] = option.find(".node-input-option-bgColor").val();
+                curr["iconShadow"] = option.find(".node-input-option-iconShadow").is(":checked"); 
+                curr["textShadow"] = option.find(".node-input-option-textShadow").is(":checked");
+                self.options.push(curr);
+            });
+        },
+        oneditresize: function(){
+            updateEditorLayout();
+        }
+    });
+</script>
+
+<script type="text/html" data-help-name="ui_multistyle-button">
+    <p>node-red-contrib-ui-multistyle-button is a button for the Node-RED Dashboard that can be styled by input</p>
+    <p>
+        That Button can be styled by the input. Therfor you have to specify the styleoptions of any value, you want.
+        For each added <b>value</b>, you can set the style-properties separately.
+
+        You can use <b>fa-icons</b>, <b>mi-icon</b> and all other icons that are installed.
+
+        The colors can be specified by name (e.g. <b>red</b>), by HEX code (e.g. <b>#FF0000</b>) or by rgb-command (e.g. <b>rgb (255, 0, 0)</b> ).
+
+        Leave blank the styleoptions if you don't want to specify them.
+
+        Determine which <b>'msg.object'</b> should be considered.
+        It can also be any other object than <b>'msg.payload'</b>.
+        You can look at <b>'msg.payload.power'<b> for example
+
+
+        Determine the <b>value</b>> and the <b>destination 'msg.object'</b> which will be sent at buttonclick.
+        you can send a <b>string</b>>, a <b>number</b>b>, a <b>bool value</b>> or the <b>value of an input 'msg.objeck'</b>
+
+
+        Special <b>strings</b> are <b>'toggle on off'</b> or <b>'toggel true false'</b>.
+        That will toggle the selected <b>input 'msg.object'</b> to the <b>output</b> at buttonclick.
+    </p>
+  </script>
