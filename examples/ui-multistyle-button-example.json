@@ -336,7 +336,7 @@
                 "textShadow": false
             },
             {
-                "valueType": "num",
+                "valueType": "str",
                 "value": "OFF",
                 "icon": "fa-check-circle-o fa-2x",
                 "iconColor": "red",
