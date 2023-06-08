@@ -1,5 +1,15 @@
 # node-red-contrib-ui-multistyle-button Changelog
 
+## 1.2.0
+
+### fix:
+-eliminate performance problems
+
+### improvements:
+-handling with lowerCase and upperCase: handling adjustable
+-adjausable behavior when no match is found
+-add a second label for the button.
+
 ## 1.1.0
 
 ### fix:

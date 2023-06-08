@@ -1,5 +1,13 @@
 [
     {
+        "id": "0c324056da69b609",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "3522c590f2426d4d",
         "type": "debug",
         "z": "0c324056da69b609",
@@ -141,17 +149,6 @@
         "height": "1",
         "options": [
             {
-                "valueType": "str",
-                "value": "default",
-                "icon": "fa-clock-o fa-2x",
-                "iconColor": "",
-                "textColor": "",
-                "bgColor": "",
-                "iconShadow": false,
-                "textShadow": true
-            },
-            {
-                "valueType": "bool",
                 "value": "true",
                 "icon": "fa-envelope-open-o fa-2x",
                 "iconColor": "#00FF00",
@@ -161,7 +158,6 @@
                 "textShadow": false
             },
             {
-                "valueType": "bool",
                 "value": "false",
                 "icon": "fa-envelope-open fa-2x",
                 "iconColor": "red",
@@ -173,16 +169,28 @@
         ],
         "name": "true false",
         "order": 7,
+        "class": "",
         "label": "Button1",
+        "sndLabel": "true/false",
+        "sndLabelPos": "top: 8px; left: 8px;",
+        "sndLabelColor": "white",
+        "sndLabelSize": "1em",
         "payload": "payload",
         "payloadType": "msg",
+        "noMatchDefault": false,
+        "ignoreCases": true,
+        "defaultIcon": "fa-clock-o fa-2x",
+        "defaultIconColor": "",
+        "defaultTextColor": "",
+        "defaultBgColor": "",
+        "defaultIconShadow": false,
+        "defaultTextShadow": false,
         "sendValue": "toggle true false",
         "sendValueType": "str",
         "sendValueTo": "payload",
         "sendValueToType": "msg",
         "topic": "topic",
         "topicType": "msg",
-        "class": "",
         "x": 360,
         "y": 60,
         "wires": [
@@ -263,13 +271,18 @@
             {
                 "p": "topic",
                 "vt": "str"
+            },
+            {
+                "p": "text",
+                "v": "other",
+                "vt": "str"
             }
         ],
         "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "topic": "num",
+        "topic": "topic",
         "x": 120,
         "y": 380,
         "wires": [
@@ -292,13 +305,23 @@
             {
                 "p": "topic",
                 "vt": "str"
+            },
+            {
+                "p": "color",
+                "v": "#00FF00",
+                "vt": "str"
+            },
+            {
+                "p": "text",
+                "v": "green",
+                "vt": "str"
             }
         ],
         "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "topic": "str",
+        "topic": "topic",
         "x": 130,
         "y": 420,
         "wires": [
@@ -316,17 +339,6 @@
         "height": "1",
         "options": [
             {
-                "valueType": "str",
-                "value": "default",
-                "icon": "fa-clock-o fa-2x",
-                "iconColor": "",
-                "textColor": "",
-                "bgColor": "",
-                "iconShadow": false,
-                "textShadow": true
-            },
-            {
-                "valueType": "str",
                 "value": "on",
                 "icon": "fa-check-circle fa-2x",
                 "iconColor": "#00FF00",
@@ -336,7 +348,6 @@
                 "textShadow": false
             },
             {
-                "valueType": "str",
                 "value": "OFF",
                 "icon": "fa-check-circle-o fa-2x",
                 "iconColor": "red",
@@ -348,16 +359,28 @@
         ],
         "name": "on off",
         "order": 7,
+        "class": "",
         "label": "Button2",
+        "sndLabel": "on/off",
+        "sndLabelPos": "top: 8px; right: 8px;",
+        "sndLabelColor": "white",
+        "sndLabelSize": "1em",
         "payload": "payload",
         "payloadType": "msg",
+        "noMatchDefault": false,
+        "ignoreCases": true,
+        "defaultIcon": "",
+        "defaultIconColor": "",
+        "defaultTextColor": "",
+        "defaultBgColor": "",
+        "defaultIconShadow": false,
+        "defaultTextShadow": false,
         "sendValue": "toggle on off",
         "sendValueType": "str",
         "sendValueTo": "payload",
         "sendValueToType": "msg",
         "topic": "topic",
         "topicType": "msg",
-        "class": "",
         "x": 350,
         "y": 220,
         "wires": [
@@ -375,48 +398,39 @@
         "height": "1",
         "options": [
             {
-                "valueType": "str",
-                "value": "default",
-                "icon": "fa-clock-o fa-2x",
-                "iconColor": "",
-                "textColor": "",
-                "bgColor": "",
-                "iconShadow": false,
-                "textShadow": true
-            },
-            {
-                "valueType": "str",
                 "value": "3",
                 "icon": "fa-list fa-2x",
-                "iconColor": "#00FF00",
-                "textColor": "#00FF00",
+                "iconColor": "{{msg.color || 'yellow'}}",
+                "textColor": "{{msg.color || '#00FFFF'}}",
                 "bgColor": "blue",
                 "iconShadow": true,
-                "textShadow": false
-            },
-            {
-                "valueType": "num",
-                "value": "3",
-                "icon": "fa-list-ol fa-2x",
-                "iconColor": "red",
-                "textColor": "red",
-                "bgColor": "blue",
-                "iconShadow": false,
                 "textShadow": false
             }
         ],
         "name": "str num",
         "order": 7,
-        "label": "{{msg.topic}}",
+        "class": "",
+        "label": "{{msg.text}}",
+        "sndLabel": "",
+        "sndLabelPos": "top: 8px; left: 8px;",
+        "sndLabelColor": "",
+        "sndLabelSize": "",
         "payload": "payload.power",
         "payloadType": "msg",
+        "noMatchDefault": false,
+        "ignoreCases": false,
+        "defaultIcon": "fa-clock-o fa-2x",
+        "defaultIconColor": "",
+        "defaultTextColor": "",
+        "defaultBgColor": "",
+        "defaultIconShadow": false,
+        "defaultTextShadow": false,
         "sendValue": "payload",
         "sendValueType": "msg",
         "sendValueTo": "payload",
         "sendValueToType": "msg",
         "topic": "topic",
         "topicType": "msg",
-        "class": "",
         "x": 340,
         "y": 400,
         "wires": [

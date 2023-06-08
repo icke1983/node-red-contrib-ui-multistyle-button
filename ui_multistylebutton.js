@@ -1,125 +1,98 @@
 module.exports = function(RED) {
     var ui = undefined;
-    var findStyle = function (value, config) {
-        let style = undefined;
-        /*style = {
-            icon: "",
-            iconColor: "",
-            iconShadow: "",
-            textColor: "",
-            textShadow: "",
-            bgColor: ""
-        };*/
-        try {
-            if (config.options.length > 0) {
-                config.options.forEach( function(item) {
-                    if (item.value.toLowerCase() == value.toString().toLowerCase() && item.valueType.substring(0,3) == (typeof value).substring(0, 3)) {
-                        let fIconColor = item.iconColor;
-                        let fTextColor = item.textColor;
-                        let fBgColor = item.bgColor;
-                        let fIconShadow = "unset";
-                        let fTextShadow = "unset";
-                        if (fIconColor == "") { fIconColor = "var(--nr-dashboard-widgetTextColor)"; }
-                        if (fTextColor == "") { fTextColor = "var(--nr-dashboard-widgetTextColor)"; }
-                        if (fBgColor == "") { fBgColor = "var(--nr-dashboard-widgetColor)"; }
-                        
-                        if (item.iconShadow == true) {
-                            fIconShadow = String.raw`
-                                0px 0px 5px ${fBgColor}, 
-                                0px 0px 10px ${fIconColor},
-                                0px 0px 15px ${fIconColor},
-                                0px 0px 20px ${fIconColor},
-                                0px 0px 30px ${fIconColor},
-                                0px 0px 40px ${fIconColor},
-                                0px 0px 55px ${fIconColor},
-                                0px 0px 75px ${fIconColor}`;
-                        }
-
-                        if (item.textShadow == true) {
-                            fTextShadow = String.raw`
-                                0px 0px 5px ${fBgColor}, 
-                                0px 0px 10px ${fTextColor},
-                                0px 0px 15px ${fTextColor},
-                                0px 0px 20px ${fTextColor},
-                                0px 0px 30px ${fTextColor},
-                                0px 0px 40px ${fTextColor},
-                                0px 0px 55px ${fTextColor},
-                                0px 0px 75px ${fTextColor}`;
-                        }
-                        
-                        style = {
-                            icon: item.icon,
-                            iconColor: item.iconColor,
-                            iconShadow: fIconShadow,
-                            textColor: item.textColor,
-                            textShadow: fTextShadow,
-                            bgColor: item.bgColor
-                        };
-                        
-                    } 
-                });
-            }
-            
-        }
-        catch (e) {
-            
-        }
-        return style;
-    }
-
+    
     var generateHTML = function (node, config) {
-        
+        var setstyle = function (styleset) {
+            let iconColor = styleset.iconColor;
+            let textColor = styleset.textColor;
+            let bgColor = styleset.bgColor;
+            let iconShadow = "unset";
+            let textShadow = "unset";
+            if (iconColor == "") { iconColor = "var(--nr-dashboard-widgetTextColor)"; }
+            if (textColor == "") { textColor = "var(--nr-dashboard-widgetTextColor)"; } 
+            if (bgColor == "") { bgColor = "var(--nr-dashboard-widgetColor)"; }
+            if (styleset.iconShadow == true ) { iconShadow = String.raw`0px 0px 5px ${bgColor}, 0px 0px 10px ${iconColor}, 0px 0px 15px ${iconColor}, 0px 0px 20px ${iconColor}, 0px 0px 30px ${iconColor}, 0px 0px 40px ${iconColor}, 0px 0px 55px ${iconColor}, 0px 0px 75px ${iconColor}`; }
+            if (styleset.textShadow == true ) { textShadow = String.raw`0px 0px 5px ${bgColor}, 0px 0px 10px ${textColor}, 0px 0px 15px ${textColor}, 0px 0px 20px ${textColor}, 0px 0px 30px ${textColor}, 0px 0px 40px ${textColor}, 0px 0px 55px ${textColor}, 0px 0px 75px ${textColor}`; }
+            return {iconColor: iconColor, textColor: textColor, bgColor: bgColor, iconShadow: iconShadow, textShadow: textShadow};
+        }
+
         var id = node.id.replace(/[^\w]/g, "");
         var HTML = "";
-        /**/
-        var icons = "";
-        //let defaultStyle = findStyle("default", config);
-        let defaultStyle = findStyle("default", config);
-        icons += String.raw`<ui-icon icon="{{msg.style.icon || '${defaultStyle.icon}'}}" style="color: {{msg.style.iconColor || '${defaultStyle.iconColor}'}}; text-shadow: {{msg.style.iconShadow || '${defaultStyle.iconShadow}'}};"></ui-icon>`;
-        HTML += String.raw`<md-button class="md-raised" ng-click="buttonClicked($event)" id="btn_${id}" style="background-color:{{msg.style.bgColor || '${defaultStyle.bgColor}'}};">`;
-        HTML += icons;
-        HTML += String.raw`
-        <span style="color: {{msg.style.textColor || '${defaultStyle.textColor}'}}; text-shadow: {{msg.style.textShadow || '${defaultStyle.textShadow}'}};">${config.label}</span>
-        </md-button>`;
+        var icon = "";
+        config.options.forEach(function(item) {
+            let style = setstyle(item);
+            let value = item.value;
+            if (config.ignoreCases == true) { value = item.value.toLowerCase(); }
+            icon += String.raw`
+                <style ng-switch-when="${value}">#btn_${id} {background-color: ${style.bgColor};}</style>
+                <ui-icon ng-switch-when="${value}" icon="${item.icon}" style="color: ${style.iconColor}; text-shadow: ${style.iconShadow}"></ui-icon>
+                <span ng-switch-when="${value}" style="color: ${style.textColor}; text-shadow: ${style.textShadow}">${config.label}</span>`;
+        });
+        let defaultStyle = setstyle({iconColor: config.defaultIconColor, textColor: config.defaultTextColor, bgColor: config.defaultBgColor, iconShadow: config.defaultIconShadow, textShadow: config.defaultTextShadow});
+        icon += String.raw`
+                <style ng-switch-default>#btn_${id} {background-color: ${defaultStyle.bgColor};}</style>
+                <ui-icon ng-switch-default icon="${config.defaultIcon}" style="color: ${defaultStyle.iconColor}; text-shadow: ${defaultStyle.iconShadow}"></ui-icon>
+                <span ng-switch-default style="color: ${defaultStyle.textColor}; text-shadow: ${defaultStyle.textShadow};">${config.label}</span>
+                <span style="color: ${config.sndLabelColor}; position: absolute; ${config.sndLabelPos}; line-height: 0px !important; font-size: ${config.sndLabelSize}">${config.sndLabel}</span>`;
         
-        HTML += String.raw`<input type="hidden" ng-init="init('` + config.class + `')">`;
+
+        HTML += String.raw`
+            <md-button class="md-raised" ng-switch="msg.${config.payload}" ng-click="buttonClicked($event)" id="btn_${id}">
+                ${icon}
+            </md-button>
+            <input type="hidden" ng-init="init('` + config.class + `')">`;
         return HTML;
     }
     
     function MS_Button(config) {
         try {
-            node = this;
-            //node.defaultStyleValue = context.globe_defaultStyleValue.getValue();
-            node.defaultStyleValue = "default";
+            RED.nodes.createNode(this,config);
+            var node = this;
+            var data = new Map();
+            
             if (ui === undefined) {
                 ui = RED.require("node-red-dashboard")(RED);
             }
-
-            RED.nodes.createNode(this,config);
             
             node.on('input', function(msg) {
+                let matchingValue = RED.util.getMessageProperty(msg, config.payload).toString();
+
+                //if ignoreCases do
+                if (config.ignoreCases == true ) { matchingValue = matchingValue.toString().toLowerCase(); }
+                //RED.util.setMessageProperty(msg, config.payload, matchingValue, true);
+
+                //if last msg should repeated on noMatch do
+                if (config.noMatchDefault != true) {
+                    //chek Payload is in Options
+                    config.options.forEach(function(item) {
+                        if (item.value == matchingValue) { 
+                            //data.set("valueExists", true);
+                            data.set("oldPayload", JSON.stringify(RED.util.cloneMessage(msg))); 
+                        }
+                    });
+                    //Object.keys(msg).forEach(key => delete msg[key]);
+                    if (data.get("oldPayload") != undefined) {
+                        Object.keys(msg).forEach(key => delete msg[key]);
+                        msg = RED.util.cloneMessage(JSON.parse(data.get("oldPayload")));
+                        //RED.util.setMessageProperty(msg, config.payload, data.get("oldPayload"), true);
+                        //msg = JSON.parse(data.get("oldMsg"));
+                    }
+                }
+
+                //copy manipulated message to emit to the ui button
+                data.set("emitMsg", JSON.stringify(msg));
+
                 //set payload
-                if (config.sendValueType == "msg") {
-                    node.newMsg_payload = RED.util.getMessageProperty(msg, config.sendValue);
-                }else if (config.sendValueType == "str") {
-                    node.newMsg_payload = RED.util.getMessageProperty(msg, config.payload);
-                }
-
-                if (config.topicType == "msg") {
-                    node.newMsg_topic = RED.util.getMessageProperty(msg, config.topic);
-                }
-
-                //set Style
-                let payload = RED.util.getMessageProperty(msg, config.payload);
-                                
-                let style = findStyle(payload, config);
-                if(style != undefined) {
-                    node.style = style;
-                }
-                if (node.style != undefined) {
-                    msg.style = node.style;
-                }
+                node.sendValue = undefined;
+                if (config.sendValueType == "msg") { node.sendValue = RED.util.getMessageProperty(msg, config.sendValue); }
+                node.payload = undefined;
+                node.payload = RED.util.getMessageProperty(msg, config.payload);
                 
+                //set topic
+                if (config.topicType == "msg") {
+                    node.topic = RED.util.getMessageProperty(msg, config.topic);
+                }
+                //node.send({payload: msg.payload});
             });
 
             var done = ui.addWidget({
@@ -140,54 +113,76 @@ module.exports = function(RED) {
                 },
 
                 beforeSend: function (msg, orig) {
-                    //set topic
-                    let t;
-                    if (config.topicType == "msg") { 
-                        t = node.newMsg_topic; 
-                    } else if (config.topicType == "str") {
-                        t = config.topic;
-                    }
-                    msg.topic = t;
-
-                    //set payload
-                    let pl;
-                    if (config.sendValueType == "str") {
-                        if (config.sendValue == "toggle on off") {
-                            if (node.newMsg_payload == "ON") {
-                                pl = "OFF";
-                            } else if (node.newMsg_payload == "On") {
-                                pl = "Off";
-                            } else if (node.newMsg_payload == "on") {
-                                pl = "off";
-                            } else if (node.newMsg_payload == "OFF") {
-                                pl = "ON";
-                            } else if (node.newMsg_payload == "Off") {
-                                pl = "On";
-                            } else {
-                                pl = "on";
-                            }
-                        } else if (config.sendValue == "toggle true false") {
-                            if (node.newMsg_payload == true) {
-                                pl = false;
-                            } else {
-                                pl = true;
-                            }
-                        } else {
-                            pl = config.sendValue;    
+                    if(orig) {
+                        //manipulate topic
+                        switch (config.topicType) {
+                            case "msg":
+                                orig.msg.topic = node.topic;
+                                break;
+                            case "str":
+                                orig.msg.topic = config.topic;
+                                break;
                         }
-                    } else if (config.sendValueType == "num") {
-                        pl = parseFloat(config.sendValue);
-                    } else if (config.sendValueType == "bool") {
-                        pl = Boolean(config.sendValue);
-                    } else if (config.sendValueType == "msg") {
-                        pl = node.newMsg_payload;
-                    }
-                    delete msg[config.sendValueTo.split(".")[0]];
-                    RED.util.setMessageProperty(msg, config.sendValueTo, pl, true);
-                                   
-                    if (orig){
-                        msg.event = orig.msg.event  
-                    }      
+                        
+                        //set payload
+                        let payload;
+                        switch (config.sendValueType) {
+                            case "str":
+                                switch (config.sendValue) {
+                                    case "toggle on off":
+                                        switch (node.payload) {
+                                            case "ON":
+                                                payload = "OFF";
+                                                break;
+                                            case "On":
+                                                payload = "Off";
+                                                break;
+                                            case "on":
+                                                payload = "off";
+                                                break;
+                                            case "OFF":
+                                                payload = "ON";
+                                                break;
+                                            case "Off":
+                                                payload = "On";
+                                                break;
+                                            case "off":
+                                                payload = "on";
+                                                break;
+                                            default:
+                                                payload = undefined;
+                                        }
+                                        break;
+                                    case "toggle true false":
+                                        switch (node.payload) {
+                                            case true:
+                                                payload = false;
+                                                break;
+                                            case false:
+                                                payload = true;
+                                                break;
+                                            default:
+                                                payload = undefined;
+                                        }
+                                        break;
+                                    default:
+                                        payload = config.sendValue;
+                                        break;
+                                }
+                                break;
+                            case "num":
+                                payload = parseFloat(config.sendValue);
+                                break;
+                            case "bool":
+                                payload = Boolean(config.sendValue);
+                                break;
+                            case "msg":
+                                payload = node.sendValue;
+                                break;
+                        }
+                        RED.util.setMessageProperty(orig.msg, config.sendValueTo, payload, true);
+                        return orig.msg
+                    }     
                 },
 
                 initController: function ($scope, events) {
@@ -207,7 +202,6 @@ module.exports = function(RED) {
                     }
 
                     $scope.buttonClicked = function (event) {
-                        //$scope.send($scope.msg);
                         $scope.send({event: $scope.getPosition(event)});                   
                                                
                     }
@@ -223,19 +217,28 @@ module.exports = function(RED) {
                     }
 
                     $scope.$watch("msg", function (msg) {
-                        if (!msg) { return; };
+                        //if (!msg) { return; };
                     });
                 },
                 
                 beforeEmit: function (msg, value) {
-                    return { msg };
+                    //delete original message
+                    Object.keys(msg).forEach(key => delete msg[key]);
+                    //get manipulated message
+                    msg = JSON.parse(data.get("emitMsg"));
+                    if (config.ignoreCases == true) {
+                        let value = RED.util.getMessageProperty(msg, config.payload).toString().toLowerCase();
+                        RED.util.setMessageProperty(msg, config.payload, value, true);
+                    }
+                    //emit message
+                    return { msg }
                 
             }
 
             });
         }
         catch (e) {
-            console.log(e);
+            //console.log(e);
         }
         node.on("close", done);
     }
